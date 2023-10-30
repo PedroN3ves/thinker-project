@@ -1,38 +1,49 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-shadow */
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-const { response } = require('express');
-
-const Thought = require('../model/Thoughts');
+const Thoughts = require('../model/Thoughts');
 
 module.exports = {
-  async createThought(request, response) {
+  async dashboard(request, response) {
+    const thoughts = await Thoughts.findAll({ raw: true });
+
+    return response.render('thoughts/dashboard', { thoughts });
+  },
+
+  async registerThought(request, response) {
+    return response.render('thoughts/register');
+  },
+
+  // eslint-disable-next-line consistent-return
+  async createThoughts(request, response) {
     const { title, description } = request.body;
 
-    const thought = await Thought.create({
+    const thought = await Thoughts.create({
       title,
       description,
     });
-    return response.json(thought);
-  },
-  async findThoughts(request, response) {
-    const thought = await Thought.findAll({ raw: true });
-    // return response.render("Thoughts");
-    return response.json(thought);
+
+    try {
+      if (thought) {
+        return response.redirect('/thoughts/dashboard');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   },
 
-  async findThought(request, response) {
+  async showPageEditThought(request, response) {
     const { id } = request.params;
-    const thought = await Thought.findByPk(id);
 
-    return response.json(thought);
+    const thought = await Thoughts.findByPk(id);
+
+    return response.render('/thoughts/edit', { thought });
   },
 
-  async update(request, response) {
+  async updateThought(request, response) {
     const { id } = request.params;
     const { title, description } = request.body;
 
-    const thought = await Thought.update(
+    const updateThought = await Thoughts.update(
       {
         title,
         description,
@@ -42,13 +53,14 @@ module.exports = {
       },
     );
 
-    return response.json({ menssage: 'Thought updated!' });
+    return response.json({ message: 'Updated Thoughts!' });
   },
-  async deleteThought(request, response) {
+
+  async deleteThoughts(request, response) {
     const { id } = request.params;
-    const thought = await Thought.destroy({ where: { id } });
 
-    return response.json({ menssage: 'User deleted!' });
+    const deleteThoughts = await Thoughts.destroy({ where: { id } });
+
+    return response.json({ message: 'Deleted Thoughts!' });
   },
-
 };

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { Model, DataTypes } = require('sequelize');
 
 class User extends Model {

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const { Model, DataTypes } = require('sequelize');
 
 class Thoughts extends Model {

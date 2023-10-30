@@ -1,19 +1,32 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 const express = require('express');
-const exphbs = require('express-handlebars');
-const router = require('./routes');
-require('./database/index');
+const path = require('path');
+const handlebars = require('express-handlebars');
 
-const port = 3003;
+const port = 5000;
+
+require('./database/index');
 
 const app = express();
 
-app.engine('handlebars', exphbs.engine({ dafaultLayout: 'main' }));
+const usersRoutes = require('./routes/userRoutes');
+const thoughtsRoutes = require('./routes/thoughtsRotes');
+
+app.engine('handlebars', handlebars.engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views/'));
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
-app.use(router);
+app.use(express.static(`${__dirname}/public`));
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+handlebars.create({
+  partialsDir: path.join(__dirname, 'views/partials'),
+});
+
+app.use(usersRoutes);
+app.use(thoughtsRoutes);
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});

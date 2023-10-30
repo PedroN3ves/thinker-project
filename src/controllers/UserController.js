@@ -1,6 +1,5 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
-const { update } = require('../model/User');
+/* eslint-disable camelcase */
 const User = require('../model/User');
 
 module.exports = {
@@ -21,7 +20,6 @@ module.exports = {
   async findUsers(request, response) {
     const users = await User.findAll({ raw: true });
 
-    // return response.render("users");
     return response.json(users);
   },
   async findUser(request, response) {
@@ -30,7 +28,6 @@ module.exports = {
 
     return response.json(user);
   },
-
   async update(request, response) {
     const { id } = request.params;
     const {
@@ -57,5 +54,4 @@ module.exports = {
 
     return response.json({ menssage: 'User deleted!' });
   },
-
 };
